@@ -1,7 +1,7 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -95,6 +95,13 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        val apiKey = project.loadLocalProperty(
+            path = "local.properties",
+            propertyName = "apiKey",
+        )
+
+        buildConfigField("String", "API_KEY",    "\"$apiKey\"")
     }
     packaging {
         resources {
@@ -110,6 +117,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 room {
@@ -121,3 +131,17 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+
+fun Project.loadLocalProperty(
+    path: String,
+    propertyName: String,
+): String {
+    val localProperties = Properties()
+    val localPropertiesFile = project.rootProject.file(path)
+    if (localPropertiesFile.exists()) {
+        localProperties.load(localPropertiesFile.inputStream())
+        return localProperties.getProperty(propertyName)
+    } else {
+        throw GradleException("can not find property : $propertyName")
+    }
+}

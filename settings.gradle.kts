@@ -1,4 +1,4 @@
-rootProject.name = "CryptocurrencyKMP"
+rootProject.name = "Cryptocurrency-KMP"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
