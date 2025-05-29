@@ -5,7 +5,7 @@ import io.ktor.client.request.get
 import org.example.project.app.coins.data.remote.dto.CoinDetailsResponseDto
 import org.example.project.app.coins.data.remote.dto.CoinPriceHistoryResponseDto
 import org.example.project.app.coins.data.remote.dto.CoinsResponseDto
-import org.example.project.app.coins.domain.CoinsRemoteDataSource
+import org.example.project.app.coins.domain.api.CoinsRemoteDataSource
 import org.example.project.app.core.domain.DataError
 import org.example.project.app.core.network.safeCall
 import org.example.project.app.core.domain.Result

@@ -1,4 +1,4 @@
-package org.example.project.app.coins.domain
+package org.example.project.app.coins.domain.api
 
 import org.example.project.app.core.domain.Result
 import org.example.project.app.coins.data.remote.dto.CoinDetailsResponseDto
