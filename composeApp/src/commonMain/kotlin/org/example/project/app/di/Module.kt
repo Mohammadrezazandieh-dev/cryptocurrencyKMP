@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import org.example.project.app.coins.domain.api.CoinsRemoteDataSource
 import org.example.project.app.coins.domain.GetCoinDetailsUseCase
 import org.example.project.app.coins.domain.GetCoinsListUseCase
+import org.example.project.app.coins.domain.GetCoinPriceHistoryUseCase
 import org.example.project.app.coins.data.remote.impl.KtorCoinsRemoteDataSource
 import org.example.project.app.coins.presentation.CoinsListViewModel
 import org.example.project.app.core.network.HttpClientFactory
@@ -33,10 +34,11 @@ val sharedModule = module {
     single<HttpClient> { HttpClientFactory.create(get()) }
 
     // coins list
-    viewModel { CoinsListViewModel( get() ) }
+    viewModel { CoinsListViewModel( get() , get()) }
     singleOf(::KtorCoinsRemoteDataSource).bind<CoinsRemoteDataSource>()
     singleOf(::GetCoinDetailsUseCase)
     singleOf(::GetCoinsListUseCase)
+    singleOf(::GetCoinPriceHistoryUseCase)
 
 }
 

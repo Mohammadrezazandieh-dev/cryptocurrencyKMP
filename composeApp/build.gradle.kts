@@ -41,6 +41,8 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.biometric)
+            implementation(compose.preview)
+            implementation(compose.uiTooling)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -68,6 +70,7 @@ kotlin {
             implementation(libs.coil.core)
             implementation(libs.coil.svg)
             implementation(libs.coil.network.ktor)
+            implementation(libs.kermit)
         }
         iosMain.dependencies {
             implementation(libs.ktor.ios)

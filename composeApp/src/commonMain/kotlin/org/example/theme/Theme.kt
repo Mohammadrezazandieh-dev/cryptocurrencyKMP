@@ -84,7 +84,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-internal fun CoinRoutineTheme(
+internal fun CryptocurrencyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
