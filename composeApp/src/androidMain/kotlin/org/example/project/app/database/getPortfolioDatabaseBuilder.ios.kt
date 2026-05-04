@@ -1,0 +1,14 @@
+package org.example.project.app.database
+
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import android.content.Context
+import org.example.project.app.core.database.portfolio.PortfolioDatabase
+
+fun getPortfolioDatabaseBuilder(context: Context): RoomDatabase.Builder<PortfolioDatabase> {
+    val dbFile = context.getDatabasePath("portfolio.db")
+    return Room.databaseBuilder<PortfolioDatabase>(
+        context = context,
+        name = dbFile.absolutePath,
+    )
+}
