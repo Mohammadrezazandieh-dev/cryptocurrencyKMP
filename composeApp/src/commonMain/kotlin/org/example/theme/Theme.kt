@@ -89,10 +89,10 @@ internal fun CryptocurrencyTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    val coinRoutineColorsPalette = if (darkTheme) DarkCryptocurrencyKMPeColorsPalette else LightCryptocurrencyKMPColorsPalette
+    val cryptocurrencyKMPeColorsPalette = if (darkTheme) DarkCryptocurrencyKMPeColorsPalette else LightCryptocurrencyKMPColorsPalette
 
     CompositionLocalProvider(
-        LocalCryptocurrencyKMPColorsPalette provides coinRoutineColorsPalette,
+        LocalCryptocurrencyKMPColorsPalette provides cryptocurrencyKMPeColorsPalette,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
