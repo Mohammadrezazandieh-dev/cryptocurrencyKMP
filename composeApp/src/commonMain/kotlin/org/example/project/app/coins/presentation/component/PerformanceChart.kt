@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import org.example.theme.CryptocurrencyTheme
+import org.example.theme.LocalCryptocurrencyKMPColorsPalette
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @Composable
@@ -47,4 +50,14 @@ fun PerformanceChart(
 
 
 
-
+@Preview
+@Composable
+private fun PerformanceChartPreview() {
+    CryptocurrencyTheme {
+        PerformanceChart(
+            nodes = emptyList(),
+            profitColor = LocalCryptocurrencyKMPColorsPalette.current.profitGreen,
+            lossColor = LocalCryptocurrencyKMPColorsPalette.current.lossRed,
+        )
+    }
+}
