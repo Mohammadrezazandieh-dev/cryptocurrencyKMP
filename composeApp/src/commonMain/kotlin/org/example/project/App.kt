@@ -2,6 +2,7 @@ package org.example.project
 
 import androidx.compose.runtime.Composable
 import org.example.project.app.coins.presentation.CoinsListScreen
+import org.example.project.app.portfolio.presentation.PortfolioScreen
 import org.example.theme.CryptocurrencyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -9,6 +10,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     CryptocurrencyTheme {
-        CoinsListScreen {  }
+//        CoinsListScreen {  }
+
+        PortfolioScreen(
+            onCoinItemClicked = {},
+            onDiscoverCoinsClicked = {}
+        )
     }
 }
