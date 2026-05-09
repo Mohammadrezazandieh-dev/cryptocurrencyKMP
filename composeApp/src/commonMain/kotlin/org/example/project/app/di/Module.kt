@@ -14,6 +14,7 @@ import org.example.project.app.core.network.HttpClientFactory
 import org.example.project.app.portfolio.data.PortfolioRepositoryImpl
 import org.example.project.app.portfolio.domain.PortfolioRepository
 import org.example.project.app.portfolio.presentation.PortfolioViewModel
+import org.example.project.app.trade.domain.BuyCoinUseCase
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -56,6 +57,8 @@ val sharedModule = module {
     singleOf(::GetCoinsListUseCase)
     singleOf(::GetCoinPriceHistoryUseCase)
 
+    //trade
+    singleOf(::BuyCoinUseCase)
 }
 
 
