@@ -1,56 +1,68 @@
-package org.example.project.app.trade.presentation.buy
+package org.example.project.app.trade.presentation.sell
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.app.coins.domain.GetCoinDetailsUseCase
+import org.example.project.app.portfolio.domain.PortfolioRepository
 import org.example.project.app.core.domain.Result
 import org.example.project.app.core.util.formatFiat
 import org.example.project.app.core.util.toUiText
-import org.example.project.app.portfolio.domain.PortfolioRepository
-import org.example.project.app.trade.domain.BuyCoinUseCase
+import org.example.project.app.trade.domain.SellCoinUseCase
 import org.example.project.app.trade.presentation.common.TradeState
 import org.example.project.app.trade.presentation.common.UiTradeCoinItem
 import org.example.project.app.trade.presentation.mapper.toCoin
 
-class BuyViewModel(
+class SellViewModel(
     private val getCoinDetailsUseCase: GetCoinDetailsUseCase,
     private val portfolioRepository: PortfolioRepository,
-    private val buyCoinUseCase: BuyCoinUseCase
+    private val sellCoinUseCase: SellCoinUseCase,
 ): ViewModel() {
-private val tempCoinId = "1" // todo: will be removed later and replace by parameter
-private val _amount = MutableStateFlow("")
-private val _state = MutableStateFlow(TradeState())
+    private val tempCoinId = "1" // TODO: will be removed
+    private val _amount = MutableStateFlow("")
+    private val _state = MutableStateFlow(TradeState())
     val state = combine(
         _state,
-        _amount
-    ){ state, amount ->
+        _amount,
+    ) { state, amount ->
         state.copy(
             amount = amount,
         )
     }.onStart {
-        val balance = portfolioRepository.cashBalanceFlow().first()
-        getCoinDetails(balance)
-    }.stateIn (
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = TradeState(isLoading = true,)
-    )
-
-
-    private suspend fun getCoinDetails(balance: Double) {
-        when(val coinResponse = getCoinDetailsUseCase.execute(tempCoinId)){
+        when(val portfolioCoinResponse = portfolioRepository.getPortfolioCoin(tempCoinId)) {
             is Result.Success -> {
+                portfolioCoinResponse.data?.ownedAmountInUnit?.let {
+                    getCoinDetails(it)
+                }
+            }
+            is Result.Error -> {
                 _state.update {
                     it.copy(
-                        availableAmount = "Available: ${formatFiat(balance)}",
+                        error = portfolioCoinResponse.error.toUiText(),
+                    )
+                }
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = TradeState(isLoading = true)
+    )
+    fun onAmountChanged(amount: String) {
+        _amount.value = amount
+    }
+    private suspend fun getCoinDetails(ownedAmountInUnit: Double) {
+        when(val coinResponse = getCoinDetailsUseCase.execute(tempCoinId)) {
+            is Result.Success -> {
+                val availableAmountInFiat = ownedAmountInUnit * coinResponse.data.price
+                _state.update {
+                    it.copy(
                         coin = UiTradeCoinItem(
                             id = coinResponse.data.coin.id,
                             name = coinResponse.data.coin.name,
@@ -58,10 +70,10 @@ private val _state = MutableStateFlow(TradeState())
                             iconUrl = coinResponse.data.coin.iconUrl,
                             price = coinResponse.data.price,
                         ),
+                        availableAmount = "Available: ${formatFiat(availableAmountInFiat)}"
                     )
                 }
             }
-
             is Result.Error -> {
                 _state.update {
                     it.copy(
@@ -73,36 +85,33 @@ private val _state = MutableStateFlow(TradeState())
     }
 
 
-    fun onAmountChanged(amount: String) {
-        _amount.value = amount
-    }
-
-    fun onBuyClicked() {
+    fun onSellClicked() {
         val tradeCoin = state.value.coin ?: return
         viewModelScope.launch {
-            val buyCoinResponse = buyCoinUseCase.buyCoin(
+            val sellCoinResponse = sellCoinUseCase.sellCoin(
                 coin = tradeCoin.toCoin(),
                 amountInFiat = _amount.value.toDouble(),
                 price = tradeCoin.price
             )
-
-            when(buyCoinResponse) {
+            when (sellCoinResponse) {
                 is Result.Success -> {
-                    // todo: Navigate to next screen with event
+                    // TODO: add event and navigation
                 }
-
                 is Result.Error -> {
                     _state.update {
                         it.copy(
-                            error = buyCoinResponse.error.toUiText(),
+                            error = sellCoinResponse.error.toUiText(),
                         )
                     }
                 }
             }
         }
     }
-
 }
+
+
+
+
 
 
 
